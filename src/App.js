@@ -73,26 +73,27 @@ class App extends React.Component {
     busca:"",
     minPreco: "",
     maxPreco: "",
+    ordenacao: 1,
     cards:[
         {
         id: Date.now(),
         imagem: camiseta1,
         nome: "Space Camiseta",
-        valor: 50.00,
+        valor: 55.00,
         },
 
         {
         id: Date.now(),
         imagem: camiseta2,
         nome: "Galaxya Camiseta",
-        valor: 70.00,
+        valor: 200.00,
         },
 
         {
         id: Date.now(),
         imagem: camiseta4,
         nome: "E'T Camiseta",
-        valor: 80.00,
+        valor: 180.00,
         },
 
         {
@@ -106,7 +107,7 @@ class App extends React.Component {
         id: Date.now(),
         imagem: camiseta3,
         nome: "Foguetinho Camiseta",
-        valor: 100.00,
+        valor: 150.00,
         }, 
 
         {
@@ -117,18 +118,11 @@ class App extends React.Component {
         }
     ] 
 }
-    //    updateminPreco = (event) =>{
-    //     this.setState({minPreco: event.target.value})
-    //   };
 
-
-    //   updatemaxpreco = (event) => {
-    //     this.setState({maxPreco: event.target.value})
-    //   }
-
-    // updateBusca = (event) => {
-    //   this.setState({busca: event.target.value})
-    //  };
+   onChangeOrdenacao = (event) => {
+  this.setState({ordenacao: event.target.value})
+  console.log(event.target.value);
+}
 
   render(){
     
@@ -142,6 +136,14 @@ class App extends React.Component {
     })
     .filter( card => {
       return this.state.maxPreco === "" || card.valor <= this.state.maxPreco
+    })
+    .sort((atualCard , proximoCrad) =>{
+      if( this.state.ordenacao === 1 ){
+              return atualCard.valor - proximoCrad.valor
+
+      }else if (this.state.ordenacao === 2) {
+        return proximoCrad.valor - atualCard.valor
+      }
     })
     .map((item) => {
       return (
@@ -168,15 +170,20 @@ class App extends React.Component {
             onchangeminPreco = {(v) => {this.setState({minPreco: v.target.value})}}
             valuemaxPreco = {this.state.maxPreco}
             onchangemaxPreco = {(v) => {this.setState({maxPreco: v.target.value})}}
-
             />
+            
             <Carrinho/>
          </SubHeader>
          <Ordem>
-          <h5>Quantidade de produtos:</h5>
-          <h5>Ordenação: <select> 
-            <option>Crescente</option> 
-            <option>Decrescente</option>
+          <h5>Quantidade de produtos: {renderCards.length}</h5>
+          <h5>Ordenação: 
+            <select 
+            name='ordenacao' 
+            value={this.state.ordenacao}
+            onChange={this.onChangeOrdenacao}
+            > 
+            <option value={1}> Crescente</option> 
+            <option value={2}> Decrescente</option>
             </select></h5>
           </Ordem>
          <CardsGrid>
@@ -187,4 +194,5 @@ class App extends React.Component {
   };
 };
  
+
 export default App;

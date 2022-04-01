@@ -18,8 +18,9 @@ class Carrinho extends React.Component{
         return(
             <div>
                 <Titulo2> Carrinho</Titulo2>
+                
                 <ContainerCarrinho>
-
+                
                 </ContainerCarrinho>
             </div>
         );
