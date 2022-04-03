@@ -134,7 +134,7 @@ class App extends React.Component {
     const adicionar = (item) => {
       const novoItem = {
         ...item,
-        quantidade: 2,
+        quantidade: 1,
         id: Date.now()
       }
 
