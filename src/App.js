@@ -37,6 +37,7 @@ flex-direction: column;
 align-items: center;
 padding: 13px;
 box-shadow: 3px 7px 22px 1px ;
+border-radius: 20px;
 `
 const Img1 = styled.img`
 height: 150px;
@@ -73,61 +74,76 @@ class App extends React.Component {
     busca:"",
     minPreco: "",
     maxPreco: "",
-    ordenacao: 1,
+    ordenacao: "crescente",
+    carrinho:[],
     cards:[
         {
-        id: Date.now(),
+        id: 1,
         imagem: camiseta1,
         nome: "Space Camiseta",
-        valor: 55.00,
+        valor: 55,
         },
 
         {
-        id: Date.now(),
+        id: 2,
         imagem: camiseta2,
         nome: "Galaxya Camiseta",
-        valor: 200.00,
+        valor: 90,
         },
 
         {
-        id: Date.now(),
+        id: 3,
         imagem: camiseta4,
         nome: "E'T Camiseta",
-        valor: 180.00,
+        valor: 120,
         },
 
         {
-        id: Date.now(),
+        id: 4,
         imagem: camiseta5,
         nome: "Astrodev Camiseta",
-        valor: 120.00,
+        valor: 150,
         },
 
         {
-        id: Date.now(),
+        id: 5,
         imagem: camiseta3,
         nome: "Foguetinho Camiseta",
-        valor: 150.00,
+        valor: 180,
         }, 
 
         {
-        id: Date.now(),
+        id: 6,
         imagem: camiseta6,
         nome: "Nasa Camiseta ",
-        valor: 90.00,
+        valor: 200,
         }
     ] 
 }
-
-   onChangeOrdenacao = (event) => {
-  this.setState({ordenacao: event.target.value})
-  console.log(event.target.value);
-}
-
   render(){
+    const deleteProduto = (cards) => { 
+      const retiraElemento = this.state.carrinho.filter((card) => {
+          if(card.id === cards.id){
+              return false
+          } else return true
+      });
+      this.setState({ carrinho: retiraElemento });
+      
+  };
     
+    const adicionar = (item) => {
+      const novoItem = {
+        ...item,
+        quantidade: 2,
+        id: Date.now()
+      }
 
-    const renderCards = this.state.cards
+      const novoCarrinho = [...this.state.carrinho, novoItem]
+      this.setState({carrinho: novoCarrinho})
+      
+    }
+    console.log(this.state.carrinho);
+    const renderCards = this.state.cards && this.state.cards
     .filter(card => {
       return card.nome.toLowerCase().includes(this.state.busca.toLowerCase())
     })
@@ -138,21 +154,20 @@ class App extends React.Component {
       return this.state.maxPreco === "" || card.valor <= this.state.maxPreco
     })
     .sort((atualCard , proximoCrad) =>{
-      if( this.state.ordenacao === 1 ){
-              return atualCard.valor - proximoCrad.valor
-
-      }else if (this.state.ordenacao === 2) {
-        return proximoCrad.valor - atualCard.valor
-      }
+     const isReverse = this.state.ordenacao === "crescente" ? 1 : -1 
+      return isReverse
+     
     })
     .map((item) => {
       return (
           <Card>
+        
           <Img1 src={item.imagem}/>
           <h3>{item.nome}</h3>
           <h5>Valor: R$ {item.valor}</h5>
-          <button>Adicionar ao carrinho</button>
+          <button onClick={() => adicionar(item)} >Adicionar ao carrinho</button>
           </Card>
+          
       );
   })
     return(
@@ -172,18 +187,23 @@ class App extends React.Component {
             onchangemaxPreco = {(v) => {this.setState({maxPreco: v.target.value})}}
             />
             
-            <Carrinho/>
+            <Carrinho 
+            arrayCarrinho = {this.state.carrinho}
+            deleteProduto = {deleteProduto}
+            />
+
          </SubHeader>
+
          <Ordem>
           <h5>Quantidade de produtos: {renderCards.length}</h5>
           <h5>Ordenação: 
             <select 
             name='ordenacao' 
             value={this.state.ordenacao}
-            onChange={this.onChangeOrdenacao}
+            onChange={(v) => {this.setState ({ordenacao: v.target.value})}}
             > 
-            <option value={1}> Crescente</option> 
-            <option value={2}> Decrescente</option>
+            <option value={"crescente"}> Crescente</option> 
+            <option value={"decrescente"}> Decrescente</option>
             </select></h5>
           </Ordem>
          <CardsGrid>
